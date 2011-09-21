@@ -4,6 +4,19 @@ import os
 KOKI_MARKER_GRID_WIDTH = 10
 
 
+### stdint datatypes ###
+class uint8(c_ubyte):
+
+    def __repr__(self):
+        return "uint8 (%d)" % (self.value)
+
+
+class uint16(c_ushort):
+
+    def __repr__(self):
+        return "uint16 (%d)" % (self.value)
+
+
 ### GLib structs ###
 
 # GLib 'primitive' datatypes
