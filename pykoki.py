@@ -130,6 +130,19 @@ class CameraParams(Structure):
         return "CameraParams (focal_length = %s, principal_point = %s, size = %s)" % (self.focal_length, self.principal_point, self.size)
 
 
+
+class Quad(Structure):
+
+    _fields_ = [("links", POINTER(GSList) * 4), ("vertices", Point2Df * 4)]
+
+    def __repr__(self):
+
+        return "Quad (links = [%s, %s, %s, %s], vertices = [%s, %s, %s, %s])" % (self.links[0], self.links[1], self.links[2], self.links[3], self.vertices[0], self.vertices[1], self.vertices[2], self.vertices[3])
+
+
+
+
+
 class PyKoki:
 
     def __init__(self):
