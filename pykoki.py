@@ -55,6 +55,17 @@ class MarkerRotation(Structure):
 
 
 
+class Marker(Structure):
+
+    _fields_ = [("code", c_int), ("centre", MarkerVertex), ("bearing", Bearing),
+                ("distance", c_float), ("rotation", MarkerRotation),
+                ("rotation_offset", c_float), ("vertices", MarkerVertex * 4)]
+
+    def __repr__(self):
+        return "Marker (\n\tcode=%d,\n\tcentre = %s,\n\tbearing = %s,\n\tdistance=%f,\n\trotation = %s,\n\trotation_offset=%f,\n\tvertices = [\n\t\t%s,\n\t\t%s,\n\t\t%s,\n\t\t%s])" % (self.code, self.centre, self.bearing, self.distance, self.rotation, self.rotation_offset, self.vertices[0], self.vertices[1], self.vertices[2], self.vertices[3])
+
+
+
 class PyKoki:
 
     def __init__(self):
