@@ -154,6 +154,16 @@ class Quad(Structure):
 
 
 
+class LabelledImage(Structure):
+
+    _fields_ = [("aliases", POINTER(GArray)), ("clips", POINTER(GArray)),
+                ("data", POINTER(uint16)), ("h", uint16), ("w", uint16)]
+
+    def __repr__(self):
+
+        return "LabelledImage (aliases = %s, clips = %s, data = %s, w=%s, h=%s)" % (self.aliases, self.clips, self.data, self.w, self.h)
+
+
 
 
 class PyKoki:
