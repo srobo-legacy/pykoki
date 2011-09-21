@@ -102,6 +102,15 @@ def GridRepr(self):
 Grid.__repr__ = GridRepr
 
 
+
+class CameraParams(Structure):
+
+    _fields_ = [("focal_length", Point2Df), ("principal_point", Point2Df), ("size", Point2Di)]
+
+    def __repr__(self):
+        return "CameraParams (focal_length = %s, principal_point = %s, size = %s)" % (self.focal_length, self.principal_point, self.size)
+
+
 class PyKoki:
 
     def __init__(self):
