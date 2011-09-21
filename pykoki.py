@@ -2,6 +2,15 @@ from ctypes import *
 import os
 
 
+class Bearing(Structure):
+
+    _fields_ = [("x", c_float), ("y", c_float), ("z", c_float)]
+
+    def __repr__(self):
+        return "Bearing (x=%f, y=%f, z=%f)" % (self.x, self.y, self.z)
+
+
+
 class Point2Di(Structure):
 
     _fields_ = [("x", c_int), ("y", c_int)]
