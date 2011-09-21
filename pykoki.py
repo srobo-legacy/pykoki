@@ -1,6 +1,7 @@
 from ctypes import *
 import os
 
+KOKI_MARKER_GRID_WIDTH = 10
 
 class Bearing(Structure):
 
@@ -82,6 +83,23 @@ class Cell(Structure):
     def __repr__(self):
         return "Cell (num_pixels=%d, sum=%d, val=%d)" % (self.num_pixels, self.sum, self.val)
 
+
+Grid = (Cell * KOKI_MARKER_GRID_WIDTH) * KOKI_MARKER_GRID_WIDTH
+
+def GridRepr(self):
+    ret = "Grid:\n["
+    for i in range(KOKI_MARKER_GRID_WIDTH):
+        ret += "["
+        for j in range(KOKI_MARKER_GRID_WIDTH):
+            ret += "(%d, %d, %d),\t" % (self[i][j].num_pixels, self[i][j].sum, self[i][j].val)
+        ret = ret[:-3]
+        ret += "],\n "
+
+    ret = ret[:-3]
+    ret += "]"
+    return ret
+
+Grid.__repr__ = GridRepr
 
 
 class PyKoki:
