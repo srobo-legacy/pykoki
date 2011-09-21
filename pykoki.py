@@ -66,6 +66,16 @@ class Marker(Structure):
 
 
 
+class ClipRegion(Structure):
+
+    _fields_ = [("mass", c_int), ("min", Point2Di), ("max", Point2Di)]
+
+    def __repr__(self):
+        return "ClipRegion (mass=%d, min = %s, max = %s)" % (self.mass, self.min, self.max)
+
+
+
+
 class PyKoki:
 
     def __init__(self):
