@@ -38,6 +38,14 @@ class Point3Df(Structure):
 
 
 
+class MarkerVertex(Structure):
+
+    _fields_ = [("image", Point2Df), ("world", Point3Df)]
+
+    def __repr__(self):
+        return "Marker Vertex (image = %s, world = %s)" % (self.image, self.world)
+
+
 class PyKoki:
 
     def __init__(self):
