@@ -164,6 +164,15 @@ class LabelledImage(Structure):
         return "LabelledImage (aliases = %s, clips = %s, data = %s, w=%s, h=%s)" % (self.aliases, self.clips, self.data, self.w, self.h)
 
 
+class Buffer(Structure):
+
+    _fields_ = [("length", c_size_t), ("start", POINTER(uint8))]
+
+    def __repr__(self):
+
+        return "Buffer (length=%s, start = %s)" % (self.length, self.start)
+
+
 
 
 class PyKoki:
