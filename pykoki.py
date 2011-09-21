@@ -46,6 +46,15 @@ class MarkerVertex(Structure):
         return "Marker Vertex (image = %s, world = %s)" % (self.image, self.world)
 
 
+class MarkerRotation(Structure):
+
+    _fields_ = [("x", c_float), ("y", c_float), ("z", c_float)]
+
+    def __repr__(self):
+        return "MarkerRotation (x=%f, y=%f, z=%f)" % (self.x, self.y, self.z)
+
+
+
 class PyKoki:
 
     def __init__(self):
