@@ -75,6 +75,14 @@ class ClipRegion(Structure):
 
 
 
+class Cell(Structure):
+
+    _fields_ = [("num_pixels", c_int), ("sum", c_int), ("val", c_int)]
+
+    def __repr__(self):
+        return "Cell (num_pixels=%d, sum=%d, val=%d)" % (self.num_pixels, self.sum, self.val)
+
+
 
 class PyKoki:
 
