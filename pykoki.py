@@ -3,6 +3,25 @@ import os
 
 KOKI_MARKER_GRID_WIDTH = 10
 
+
+### GLib structs ###
+
+# GLib 'primitive' datatypes
+class gchar_p(c_char_p): pass
+class guint(c_uint): pass
+class gpointer(c_void_p): pass
+
+
+class GArray(Structure):
+
+    _fields_ = [("data", gchar_p), ("len", guint)]
+
+
+class GSList(Structure): pass
+GSList._fields_ = [("data", gpointer), ("next", POINTER(GSList))]
+
+
+
 class Bearing(Structure):
 
     _fields_ = [("x", c_float), ("y", c_float), ("z", c_float)]
