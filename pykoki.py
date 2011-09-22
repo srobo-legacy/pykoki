@@ -222,6 +222,10 @@ class PyKoki:
         l.koki_v4l_set_format.argtypes = [c_int, v4l2.v4l2_format]
         l.koki_v4l_set_format.restype = c_int
 
+        # struct v4l2_format koki_v4l_create_YUYV_format(unsigned int w, unsigned int h)
+        l.koki_v4l_create_YUYV_format.argtypes = [c_uint, c_uint]
+        l.koki_v4l_create_YUYV_format.restype = v4l2.v4l2_format
+
 
         ### crc12.h ###
 
@@ -249,6 +253,12 @@ class PyKoki:
     def v4l_set_format(self, fd, fmt):
 
         return self.libkoki.koki_v4l_set_format(fd, fmt)
+
+
+    def v4l_create_YUYV_format(self, w, h):
+
+        return self.libkoki.koki_v4l_create_YUYV_format(w, h)
+
 
 
     def crc12(self, n):
