@@ -204,6 +204,16 @@ class PyKoki:
 
         l = self.libkoki
 
+        ### v4l.h ###
+
+        # int koki_v4l_open_cam(const char* filename)
+        l.koki_v4l_open_cam.argtypes = [c_char_p]
+        l.koki_v4l_open_cam.resytpe = c_int
+
+        # void koki_v4l_close_cam(int fd)
+        l.koki_v4l_close_cam.argtypes = [c_int]
+
+
         ### crc12.h ###
 
         # uint16_t koki_crc12 (uint8_t input)
@@ -211,6 +221,15 @@ class PyKoki:
         l.koki_crc12.restype = uint16
 
 
+
+    def v4l_open_cam(self, filename):
+
+        return self.libkoki.koki_v4l_open_cam(filename)
+
+
+    def v4l_close_cam(self, fd):
+
+        return self.libkoki.koki_v4l_close_cam(fd)
 
 
     def crc12(self, n):
