@@ -352,7 +352,8 @@ class PyKoki:
         for i in range(markers.contents.len.value):
             # cast the pointer tp a marker pointer, and append to a list
             # of actual (dereferenced) markers
-            ret.append(cast(markers.contents.pdata[i], POINTER(Marker)).contents)
+            marker = cast(markers.contents.pdata[i], POINTER(Marker)).contents
+            ret.append(self._make_copy(marker))
 
         # free the markers -- we only need the Python list
         self.libkoki.koki_markers_free(markers)
@@ -369,7 +370,8 @@ class PyKoki:
         for i in range(markers.contents.len.value):
             # cast the pointer tp a marker pointer, and append to a list
             # of actual (dereferenced) markers
-            ret.append(cast(markers.contents.pdata[i], POINTER(Marker)).contents)
+            marker = cast(markers.contents.pdata[i], POINTER(Marker)).contents
+            ret.append(self._make_copy(marker))
 
         # free the markers -- we only need the Python list
         self.libkoki.koki_markers_free(markers)
