@@ -273,6 +273,10 @@ class PyKoki:
         l.koki_markers_free.argtypes = [POINTER(GPtrArray)]
 
 
+        # void koki_image_free(IplImage *image)
+        l.koki_image_free.argtypes = [c_void_p]
+
+
         ### crc12.h ###
 
         # uint16_t koki_crc12 (uint8_t input)
@@ -341,6 +345,11 @@ class PyKoki:
     def v4l_YUYV_frame_to_RGB_image(self, frame, w, h):
 
         return self.libkoki.koki_v4l_YUYV_frame_to_RGB_image(frame, w, h)
+
+
+    def image_free(self, img):
+
+        self.libkoki.koki_image_free(img)
 
 
     def find_markers(self, image, marker_width, params):
