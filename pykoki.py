@@ -1,5 +1,6 @@
 from ctypes import *
 import os
+from v4l2 import v4l2
 
 KOKI_MARKER_GRID_WIDTH = 10
 
@@ -213,6 +214,10 @@ class PyKoki:
         # void koki_v4l_close_cam(int fd)
         l.koki_v4l_close_cam.argtypes = [c_int]
 
+        # struct v4l2_format koki_v4l_get_format()
+        l.koki_v4l_get_format.argtypes = [c_int]
+        l.koki_v4l_get_format.restype = v4l2.v4l2_format
+
 
         ### crc12.h ###
 
@@ -230,6 +235,11 @@ class PyKoki:
     def v4l_close_cam(self, fd):
 
         return self.libkoki.koki_v4l_close_cam(fd)
+
+
+    def v4l_get_format(self, fd):
+
+        return self.libkoki.koki_v4l_get_format(fd)
 
 
     def crc12(self, n):
