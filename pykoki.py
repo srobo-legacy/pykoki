@@ -233,6 +233,10 @@ class PyKoki:
         l.koki_v4l_prepare_buffers.argtypes = [c_int, POINTER(c_int)]
         l.koki_v4l_prepare_buffers.restype = POINTER(Buffer)
 
+        # int koki_v4l_start_stream(int fd)
+        l.koki_v4l_start_stream.argtypes = [c_int]
+        l.koki_v4l_start_stream.restype = c_int
+
 
         ### crc12.h ###
 
@@ -276,6 +280,10 @@ class PyKoki:
 
         return self.libkoki.koki_v4l_prepare_buffers(fd, count_p)
 
+
+    def v4l_start_stream(self, fd):
+
+        return self.libkoki.koki_v4l_start_stream(fd)
 
 
     def crc12(self, n):
