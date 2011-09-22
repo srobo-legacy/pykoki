@@ -229,6 +229,11 @@ class PyKoki:
         # void koki_v4l_print_format(struct v4l2_format fmt)
         l.koki_v4l_print_format.argtypes = [v4l2.v4l2_format]
 
+        # koki_buffer_t* koki_v4l_prepare_buffers(int fd, int *count)
+        l.koki_v4l_prepare_buffers.argtypes = [c_int, POINTER(c_int)]
+        l.koki_v4l_prepare_buffers.restype = POINTER(Buffer)
+
+
         ### crc12.h ###
 
         # uint16_t koki_crc12 (uint8_t input)
@@ -265,6 +270,11 @@ class PyKoki:
     def v4l_print_format(self, fmt):
 
         self.libkoki.koki_v4l_print_format(fmt)
+
+
+    def v4l_prepare_buffers(self, fd, count_p):
+
+        return self.libkoki.koki_v4l_prepare_buffers(fd, count_p)
 
 
 
