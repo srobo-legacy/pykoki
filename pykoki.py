@@ -180,6 +180,7 @@ class PyKoki:
     def __init__(self):
 
         self._load_library("../libkoki/lib/")
+        self._setup_library()
 
 
 
@@ -198,4 +199,8 @@ class PyKoki:
         self.libkoki = libkoki
 
 
+
+    def _setup_library(self):
+
+        l = self.libkoki
 
