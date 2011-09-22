@@ -204,3 +204,15 @@ class PyKoki:
 
         l = self.libkoki
 
+        ### crc12.h ###
+
+        # uint16_t koki_crc12 (uint8_t input)
+        l.koki_crc12.argtypes = [uint8]
+        l.koki_crc12.restype = uint16
+
+
+
+
+    def crc12(self, n):
+
+        return self.libkoki.koki_crc12(n)
