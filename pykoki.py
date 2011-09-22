@@ -237,6 +237,10 @@ class PyKoki:
         l.koki_v4l_start_stream.argtypes = [c_int]
         l.koki_v4l_start_stream.restype = c_int
 
+        # int koki_v4l_stop_stream(int fd)
+        l.koki_v4l_stop_stream.argtypes = [c_int]
+        l.koki_v4l_stop_stream.restype = c_int
+
 
         ### crc12.h ###
 
@@ -284,6 +288,11 @@ class PyKoki:
     def v4l_start_stream(self, fd):
 
         return self.libkoki.koki_v4l_start_stream(fd)
+
+
+    def v4l_stop_stream(self, fd):
+
+        return self.libkoki.koki_v4l_stop_stream(fd)
 
 
     def crc12(self, n):
