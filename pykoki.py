@@ -34,6 +34,10 @@ class GArray(Structure):
 class GSList(Structure): pass
 GSList._fields_ = [("data", gpointer), ("next", POINTER(GSList))]
 
+class GPtrArray(Structure):
+
+    _fields_ = [("pdata", POINTER(gpointer)), ("len", guint)]
+
 
 
 class Bearing(Structure):
@@ -250,6 +254,11 @@ class PyKoki:
         l.koki_v4l_YUYV_frame_to_RGB_image.restype = c_void_p
 
 
+        # GPtrArray* koki_find_markers(IplImage *frame, float marker_width,
+        #                              koki_camera_params_t *params)
+        l.koki_find_markers.argtypes = [c_void_p, c_float, POINTER(CameraParams)]
+        l.koki_find_markers.restype = POINTER(GPtrArray)
+
 
         ### crc12.h ###
 
@@ -313,6 +322,19 @@ class PyKoki:
 
         return self.libkoki.koki_v4l_YUYV_frame_to_RGB_image(frame, w, h)
 
+
+    def find_markers(self, image, marker_width, params):
+
+        markers = self.libkoki.koki_find_markers(image, marker_width, params)
+
+        ret = []
+
+        for i in range(markers.contents.len.value):
+            # cast the pointer tp a marker pointer, and append to a list
+            # of actual (dereferenced) markers
+            ret.append(cast(markers.contents.pdata[i], POINTER(Marker)).contents)
+
+        return ret
 
 
     def crc12(self, n):
