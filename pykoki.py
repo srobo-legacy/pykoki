@@ -178,6 +178,9 @@ class Buffer(Structure):
         return "Buffer (length=%s, start = %s)" % (self.length, self.start)
 
 
+WIDTH_FROM_CODE_FUNC = CFUNCTYPE(c_float, c_int)
+
+
 
 
 class PyKoki:
@@ -260,6 +263,12 @@ class PyKoki:
         l.koki_find_markers.restype = POINTER(GPtrArray)
 
 
+        # GPtrArray* koki_find_markers_fp(IplImage *frame, float (*fp)(int),
+        #                                 koki_camera_params_t *params)
+        l.koki_find_markers_fp.argtypes = [c_void_p, WIDTH_FROM_CODE_FUNC, POINTER(CameraParams)]
+        l.koki_find_markers_fp.restype = POINTER(GPtrArray)
+
+
         # void koki_markers_free(GPtrArray *markers)
         l.koki_markers_free.argtypes = [POINTER(GPtrArray)]
 
@@ -330,6 +339,23 @@ class PyKoki:
     def find_markers(self, image, marker_width, params):
 
         markers = self.libkoki.koki_find_markers(image, marker_width, params)
+
+        ret = []
+
+        for i in range(markers.contents.len.value):
+            # cast the pointer tp a marker pointer, and append to a list
+            # of actual (dereferenced) markers
+            ret.append(cast(markers.contents.pdata[i], POINTER(Marker)).contents)
+
+        # free the markers -- we only need the Python list
+        self.libkoki.koki_markers_free(markers)
+
+        return ret
+
+
+    def find_markers_fp(self, image, func, params):
+
+        markers = self.libkoki.koki_find_markers_fp(image, WIDTH_FROM_CODE_FUNC(func), params)
 
         ret = []
 
