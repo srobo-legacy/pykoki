@@ -245,6 +245,11 @@ class PyKoki:
         l.koki_v4l_get_frame_array.argtypes = [c_int, POINTER(Buffer)]
         l.koki_v4l_get_frame_array.restype = POINTER(uint8)
 
+        # IplImage *koki_v4l_YUYV_frame_to_RGB_image(uint8_t *frame, uint16_t w, uint16_t h)
+        l.koki_v4l_YUYV_frame_to_RGB_image.argtypes = [POINTER(uint8), uint16, uint16]
+        l.koki_v4l_YUYV_frame_to_RGB_image.restype = c_void_p
+
+
 
         ### crc12.h ###
 
@@ -302,6 +307,11 @@ class PyKoki:
     def v4l_get_frame_array(self, fd, buffers):
 
         return self.libkoki.koki_v4l_get_frame_array(fd, buffers)
+
+
+    def v4l_YUYV_frame_to_RGB_image(self, frame, w, h):
+
+        return self.libkoki.koki_v4l_YUYV_frame_to_RGB_image(frame, w, h)
 
 
 
