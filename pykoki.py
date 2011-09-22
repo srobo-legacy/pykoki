@@ -281,6 +281,13 @@ class PyKoki:
 
 
 
+    def _make_copy(self, o):
+
+        ret = type(o)()
+        pointer(ret)[0] = o
+        return ret
+
+
     def v4l_open_cam(self, filename):
 
         return self.libkoki.koki_v4l_open_cam(filename)
