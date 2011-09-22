@@ -241,6 +241,10 @@ class PyKoki:
         l.koki_v4l_stop_stream.argtypes = [c_int]
         l.koki_v4l_stop_stream.restype = c_int
 
+        # uint8_t* koki_v4l_get_frame_array(int fd, koki_buffer_t *buffers)
+        l.koki_v4l_get_frame_array.argtypes = [c_int, POINTER(Buffer)]
+        l.koki_v4l_get_frame_array.restype = POINTER(uint8)
+
 
         ### crc12.h ###
 
@@ -293,6 +297,12 @@ class PyKoki:
     def v4l_stop_stream(self, fd):
 
         return self.libkoki.koki_v4l_stop_stream(fd)
+
+
+    def v4l_get_frame_array(self, fd, buffers):
+
+        return self.libkoki.koki_v4l_get_frame_array(fd, buffers)
+
 
 
     def crc12(self, n):
