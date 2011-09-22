@@ -260,6 +260,10 @@ class PyKoki:
         l.koki_find_markers.restype = POINTER(GPtrArray)
 
 
+        # void koki_markers_free(GPtrArray *markers)
+        l.koki_markers_free.argtypes = [POINTER(GPtrArray)]
+
+
         ### crc12.h ###
 
         # uint16_t koki_crc12 (uint8_t input)
@@ -333,6 +337,9 @@ class PyKoki:
             # cast the pointer tp a marker pointer, and append to a list
             # of actual (dereferenced) markers
             ret.append(cast(markers.contents.pdata[i], POINTER(Marker)).contents)
+
+        # free the markers -- we only need the Python list
+        self.libkoki.koki_markers_free(markers)
 
         return ret
 
