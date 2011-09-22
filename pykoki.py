@@ -51,10 +51,10 @@ class Bearing(Structure):
 
 class Point2Di(Structure):
 
-    _fields_ = [("x", c_int), ("y", c_int)]
+    _fields_ = [("x", uint16), ("y", uint16)]
 
     def __repr__(self):
-        return "Point2Di (x=%i, y=%i)" % (self.x, self.y)
+        return "Point2Di (x=%d, y=%d)" % (self.x.value, self.y.value)
 
 
 
@@ -95,30 +95,30 @@ class MarkerRotation(Structure):
 
 class Marker(Structure):
 
-    _fields_ = [("code", c_int), ("centre", MarkerVertex), ("bearing", Bearing),
-                ("distance", c_float), ("rotation", MarkerRotation),
-                ("rotation_offset", c_float), ("vertices", MarkerVertex * 4)]
+    _fields_ = [("code", uint8), ("centre", MarkerVertex), ("vertices", MarkerVertex * 4),
+                ("rotation_offset", c_float), ("rotation", MarkerRotation),
+                ("bearing", Bearing), ("distance", c_float)]
 
     def __repr__(self):
-        return "Marker (\n\tcode=%d,\n\tcentre = %s,\n\tbearing = %s,\n\tdistance=%f,\n\trotation = %s,\n\trotation_offset=%f,\n\tvertices = [\n\t\t%s,\n\t\t%s,\n\t\t%s,\n\t\t%s])" % (self.code, self.centre, self.bearing, self.distance, self.rotation, self.rotation_offset, self.vertices[0], self.vertices[1], self.vertices[2], self.vertices[3])
+        return "Marker (\n\tcode=%d,\n\tcentre = %s,\n\tbearing = %s,\n\tdistance=%f,\n\trotation = %s,\n\trotation_offset=%f,\n\tvertices = [\n\t\t%s,\n\t\t%s,\n\t\t%s,\n\t\t%s])" % (self.code.value, self.centre, self.bearing, self.distance, self.rotation, self.rotation_offset, self.vertices[0], self.vertices[1], self.vertices[2], self.vertices[3])
 
 
 
 class ClipRegion(Structure):
 
-    _fields_ = [("mass", c_int), ("min", Point2Di), ("max", Point2Di)]
+    _fields_ = [("min", Point2Di), ("max", Point2Di), ("mass", uint16)]
 
     def __repr__(self):
-        return "ClipRegion (mass=%d, min = %s, max = %s)" % (self.mass, self.min, self.max)
+        return "ClipRegion (mass=%d, min = %s, max = %s)" % (self.mass.value, self.min, self.max)
 
 
 
 class Cell(Structure):
 
-    _fields_ = [("num_pixels", c_int), ("sum", c_int), ("val", c_int)]
+    _fields_ = [("sum", c_uint), ("num_pixels", uint16), ("val", uint8)]
 
     def __repr__(self):
-        return "Cell (num_pixels=%d, sum=%d, val=%d)" % (self.num_pixels, self.sum, self.val)
+        return "Cell (num_pixels=%d, sum=%d, val=%d)" % (self.num_pixels.value, self.sum, self.val.value)
 
 
 Grid = (Cell * KOKI_MARKER_GRID_WIDTH) * KOKI_MARKER_GRID_WIDTH
@@ -128,7 +128,7 @@ def GridRepr(self):
     for i in range(KOKI_MARKER_GRID_WIDTH):
         ret += "["
         for j in range(KOKI_MARKER_GRID_WIDTH):
-            ret += "(%d, %d, %d),\t" % (self[i][j].num_pixels, self[i][j].sum, self[i][j].val)
+            ret += "(%d, %d, %d),\t" % (self[i][j].num_pixels.value, self[i][j].sum, self[i][j].val.value)
         ret = ret[:-3]
         ret += "],\n "
 
@@ -142,7 +142,7 @@ Grid.__repr__ = GridRepr
 
 class CameraParams(Structure):
 
-    _fields_ = [("focal_length", Point2Df), ("principal_point", Point2Df), ("size", Point2Di)]
+    _fields_ = [("principal_point", Point2Df), ("focal_length", Point2Df), ("size", Point2Di)]
 
     def __repr__(self):
         return "CameraParams (focal_length = %s, principal_point = %s, size = %s)" % (self.focal_length, self.principal_point, self.size)
@@ -151,7 +151,7 @@ class CameraParams(Structure):
 
 class Quad(Structure):
 
-    _fields_ = [("links", POINTER(GSList) * 4), ("vertices", Point2Df * 4)]
+    _fields_ = [("vertices", Point2Df * 4), ("links", POINTER(GSList) * 4)]
 
     def __repr__(self):
 
@@ -161,8 +161,8 @@ class Quad(Structure):
 
 class LabelledImage(Structure):
 
-    _fields_ = [("aliases", POINTER(GArray)), ("clips", POINTER(GArray)),
-                ("data", POINTER(uint16)), ("h", uint16), ("w", uint16)]
+    _fields_ = [("data", POINTER(uint16)),  ("w", uint16), ("h", uint16),
+                ("clips", POINTER(GArray)), ("aliases", POINTER(GArray))]
 
     def __repr__(self):
 
