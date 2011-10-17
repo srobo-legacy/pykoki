@@ -4,18 +4,6 @@ from v4l2 import v4l2
 
 KOKI_MARKER_GRID_WIDTH = 10
 
-
-### stdint datatypes ###
-class uint8(c_ubyte):
-    def __repr__(self):
-        return "uint8 (%d)" % (self.value)
-
-
-class uint16(c_ushort):
-    def __repr__(self):
-        return "uint16 (%d)" % (self.value)
-
-
 ### GLib structs ###
 
 # GLib 'primitive' datatypes
@@ -43,7 +31,7 @@ class Bearing(Structure):
 
 
 class Point2Di(Structure):
-    _fields_ = [("x", uint16), ("y", uint16)]
+    _fields_ = [("x", c_uint16), ("y", c_uint16)]
 
     def __repr__(self):
         return "Point2Di (x=%d, y=%d)" % (self.x.value, self.y.value)
@@ -79,7 +67,7 @@ class MarkerRotation(Structure):
 
 
 class Marker(Structure):
-    _fields_ = [("code", uint8), ("centre", MarkerVertex), ("vertices", MarkerVertex * 4),
+    _fields_ = [("code", c_uint8), ("centre", MarkerVertex), ("vertices", MarkerVertex * 4),
                 ("rotation_offset", c_float), ("rotation", MarkerRotation),
                 ("bearing", Bearing), ("distance", c_float)]
 
@@ -88,14 +76,14 @@ class Marker(Structure):
 
 
 class ClipRegion(Structure):
-    _fields_ = [("min", Point2Di), ("max", Point2Di), ("mass", uint16)]
+    _fields_ = [("min", Point2Di), ("max", Point2Di), ("mass", c_uint16)]
 
     def __repr__(self):
         return "ClipRegion (mass=%d, min = %s, max = %s)" % (self.mass.value, self.min, self.max)
 
 
 class Cell(Structure):
-    _fields_ = [("sum", c_uint), ("num_pixels", uint16), ("val", uint8)]
+    _fields_ = [("sum", c_uint), ("num_pixels", c_uint16), ("val", c_uint8)]
 
     def __repr__(self):
         return "Cell (num_pixels=%d, sum=%d, val=%d)" % (self.num_pixels.value, self.sum, self.val.value)
@@ -134,7 +122,7 @@ class Quad(Structure):
 
 
 class LabelledImage(Structure):
-    _fields_ = [("data", POINTER(uint16)),  ("w", uint16), ("h", uint16),
+    _fields_ = [("data", POINTER(c_uint16)),  ("w", c_uint16), ("h", c_uint16),
                 ("clips", POINTER(GArray)), ("aliases", POINTER(GArray))]
 
     def __repr__(self):
@@ -142,7 +130,7 @@ class LabelledImage(Structure):
 
 
 class Buffer(Structure):
-    _fields_ = [("length", c_size_t), ("start", POINTER(uint8))]
+    _fields_ = [("length", c_size_t), ("start", POINTER(c_uint8))]
 
     def __repr__(self):
         return "Buffer (length=%s, start = %s)" % (self.length, self.start)
@@ -213,10 +201,10 @@ class PyKoki:
 
         # uint8_t* koki_v4l_get_frame_array(int fd, koki_buffer_t *buffers)
         l.koki_v4l_get_frame_array.argtypes = [c_int, POINTER(Buffer)]
-        l.koki_v4l_get_frame_array.restype = POINTER(uint8)
+        l.koki_v4l_get_frame_array.restype = POINTER(c_uint8)
 
         # IplImage *koki_v4l_YUYV_frame_to_RGB_image(uint8_t *frame, uint16_t w, uint16_t h)
-        l.koki_v4l_YUYV_frame_to_RGB_image.argtypes = [POINTER(uint8), uint16, uint16]
+        l.koki_v4l_YUYV_frame_to_RGB_image.argtypes = [POINTER(c_uint8), c_uint16, c_uint16]
         l.koki_v4l_YUYV_frame_to_RGB_image.restype = c_void_p
 
         # GPtrArray* koki_find_markers(IplImage *frame, float marker_width,
@@ -239,8 +227,8 @@ class PyKoki:
         ### crc12.h ###
 
         # uint16_t koki_crc12 (uint8_t input)
-        l.koki_crc12.argtypes = [uint8]
-        l.koki_crc12.restype = uint16
+        l.koki_crc12.argtypes = [c_uint8]
+        l.koki_crc12.restype = c_uint16
 
 
     def _make_copy(self, o):
