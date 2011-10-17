@@ -200,6 +200,9 @@ class PyKoki:
         l.koki_v4l_prepare_buffers.argtypes = [c_int, POINTER(c_int)]
         l.koki_v4l_prepare_buffers.restype = POINTER(Buffer)
 
+        # void koki_v4l_free_buffers(koki_buffer_t *buffers, int count)
+        l.koki_v4l_free_buffers.argtypes = [ POINTER(Buffer), c_int ]
+
         # int koki_v4l_start_stream(int fd)
         l.koki_v4l_start_stream.argtypes = [c_int]
         l.koki_v4l_start_stream.restype = c_int
@@ -265,6 +268,9 @@ class PyKoki:
 
     def v4l_prepare_buffers(self, fd, count_p):
         return self.libkoki.koki_v4l_prepare_buffers(fd, count_p)
+
+    def v4l_free_buffers(self, buffers, count):
+        self.libkoki.koki_v4l_free_buffers( buffers, count )
 
     def v4l_start_stream(self, fd):
         return self.libkoki.koki_v4l_start_stream(fd)
