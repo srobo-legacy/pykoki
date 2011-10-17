@@ -152,8 +152,8 @@ WIDTH_FROM_CODE_FUNC = CFUNCTYPE(c_float, c_int)
 
 
 class PyKoki:
-    def __init__(self):
-        self._load_library("../libkoki/lib/")
+    def __init__(self, lib = "../libkoki/lib"):
+        self._load_library(lib)
         self._setup_library()
 
     def _load_library(self, directory):
