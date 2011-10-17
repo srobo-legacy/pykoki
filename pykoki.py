@@ -7,13 +7,11 @@ KOKI_MARKER_GRID_WIDTH = 10
 
 ### stdint datatypes ###
 class uint8(c_ubyte):
-
     def __repr__(self):
         return "uint8 (%d)" % (self.value)
 
 
 class uint16(c_ushort):
-
     def __repr__(self):
         return "uint16 (%d)" % (self.value)
 
@@ -27,7 +25,6 @@ class gpointer(c_void_p): pass
 
 
 class GArray(Structure):
-
     _fields_ = [("data", gchar_p), ("len", guint)]
 
 
@@ -35,49 +32,38 @@ class GSList(Structure): pass
 GSList._fields_ = [("data", gpointer), ("next", POINTER(GSList))]
 
 class GPtrArray(Structure):
-
     _fields_ = [("pdata", POINTER(gpointer)), ("len", guint)]
 
 
-
 class Bearing(Structure):
-
     _fields_ = [("x", c_float), ("y", c_float), ("z", c_float)]
 
     def __repr__(self):
         return "Bearing (x=%f, y=%f, z=%f)" % (self.x, self.y, self.z)
 
 
-
 class Point2Di(Structure):
-
     _fields_ = [("x", uint16), ("y", uint16)]
 
     def __repr__(self):
         return "Point2Di (x=%d, y=%d)" % (self.x.value, self.y.value)
 
 
-
 class Point2Df(Structure):
-
     _fields_ = [("x", c_float), ("y", c_float)]
 
     def __repr__(self):
         return "Point2Df (x=%f, y=%f)" % (self.x, self.y)
 
 
-
 class Point3Df(Structure):
-
     _fields_ = [("x", c_float), ("y", c_float), ("z", c_float)]
 
     def __repr__(self):
         return "Point3Df (x=%f, y=%f, z=%f)" % (self.x, self.y, self.z)
 
 
-
 class MarkerVertex(Structure):
-
     _fields_ = [("image", Point2Df), ("world", Point3Df)]
 
     def __repr__(self):
@@ -92,9 +78,7 @@ class MarkerRotation(Structure):
         return "MarkerRotation (x=%f, y=%f, z=%f)" % (self.x, self.y, self.z)
 
 
-
 class Marker(Structure):
-
     _fields_ = [("code", uint8), ("centre", MarkerVertex), ("vertices", MarkerVertex * 4),
                 ("rotation_offset", c_float), ("rotation", MarkerRotation),
                 ("bearing", Bearing), ("distance", c_float)]
@@ -103,18 +87,14 @@ class Marker(Structure):
         return "Marker (\n\tcode=%d,\n\tcentre = %s,\n\tbearing = %s,\n\tdistance=%f,\n\trotation = %s,\n\trotation_offset=%f,\n\tvertices = [\n\t\t%s,\n\t\t%s,\n\t\t%s,\n\t\t%s])" % (self.code.value, self.centre, self.bearing, self.distance, self.rotation, self.rotation_offset, self.vertices[0], self.vertices[1], self.vertices[2], self.vertices[3])
 
 
-
 class ClipRegion(Structure):
-
     _fields_ = [("min", Point2Di), ("max", Point2Di), ("mass", uint16)]
 
     def __repr__(self):
         return "ClipRegion (mass=%d, min = %s, max = %s)" % (self.mass.value, self.min, self.max)
 
 
-
 class Cell(Structure):
-
     _fields_ = [("sum", c_uint), ("num_pixels", uint16), ("val", uint8)]
 
     def __repr__(self):
@@ -139,61 +119,44 @@ def GridRepr(self):
 Grid.__repr__ = GridRepr
 
 
-
 class CameraParams(Structure):
-
     _fields_ = [("principal_point", Point2Df), ("focal_length", Point2Df), ("size", Point2Di)]
 
     def __repr__(self):
         return "CameraParams (focal_length = %s, principal_point = %s, size = %s)" % (self.focal_length, self.principal_point, self.size)
 
 
-
 class Quad(Structure):
-
     _fields_ = [("vertices", Point2Df * 4), ("links", POINTER(GSList) * 4)]
 
     def __repr__(self):
-
         return "Quad (links = [%s, %s, %s, %s], vertices = [%s, %s, %s, %s])" % (self.links[0], self.links[1], self.links[2], self.links[3], self.vertices[0], self.vertices[1], self.vertices[2], self.vertices[3])
 
 
-
 class LabelledImage(Structure):
-
     _fields_ = [("data", POINTER(uint16)),  ("w", uint16), ("h", uint16),
                 ("clips", POINTER(GArray)), ("aliases", POINTER(GArray))]
 
     def __repr__(self):
-
         return "LabelledImage (aliases = %s, clips = %s, data = %s, w=%s, h=%s)" % (self.aliases, self.clips, self.data, self.w, self.h)
 
 
 class Buffer(Structure):
-
     _fields_ = [("length", c_size_t), ("start", POINTER(uint8))]
 
     def __repr__(self):
-
         return "Buffer (length=%s, start = %s)" % (self.length, self.start)
 
 
 WIDTH_FROM_CODE_FUNC = CFUNCTYPE(c_float, c_int)
 
 
-
-
 class PyKoki:
-
     def __init__(self):
-
         self._load_library("../libkoki/lib/")
         self._setup_library()
 
-
-
     def _load_library(self, directory):
-
         libkoki = None
 
         path = os.path.join(directory, "libkoki.so")
@@ -206,10 +169,7 @@ class PyKoki:
 
         self.libkoki = libkoki
 
-
-
     def _setup_library(self):
-
         l = self.libkoki
 
         ### v4l.h ###
@@ -256,7 +216,6 @@ class PyKoki:
         l.koki_v4l_YUYV_frame_to_RGB_image.argtypes = [POINTER(uint8), uint16, uint16]
         l.koki_v4l_YUYV_frame_to_RGB_image.restype = c_void_p
 
-
         # GPtrArray* koki_find_markers(IplImage *frame, float marker_width,
         #                              koki_camera_params_t *params)
         l.koki_find_markers.argtypes = [c_void_p, c_float, POINTER(CameraParams)]
@@ -268,14 +227,11 @@ class PyKoki:
         l.koki_find_markers_fp.argtypes = [c_void_p, WIDTH_FROM_CODE_FUNC, POINTER(CameraParams)]
         l.koki_find_markers_fp.restype = POINTER(GPtrArray)
 
-
         # void koki_markers_free(GPtrArray *markers)
         l.koki_markers_free.argtypes = [POINTER(GPtrArray)]
 
-
         # void koki_image_free(IplImage *image)
         l.koki_image_free.argtypes = [c_void_p]
-
 
         ### crc12.h ###
 
@@ -284,76 +240,48 @@ class PyKoki:
         l.koki_crc12.restype = uint16
 
 
-
     def _make_copy(self, o):
-
         ret = type(o)()
         pointer(ret)[0] = o
         return ret
 
-
     def v4l_open_cam(self, filename):
-
         return self.libkoki.koki_v4l_open_cam(filename)
 
-
     def v4l_close_cam(self, fd):
-
         return self.libkoki.koki_v4l_close_cam(fd)
 
-
     def v4l_get_format(self, fd):
-
         return self.libkoki.koki_v4l_get_format(fd)
 
-
     def v4l_set_format(self, fd, fmt):
-
         return self.libkoki.koki_v4l_set_format(fd, fmt)
 
-
     def v4l_create_YUYV_format(self, w, h):
-
         return self.libkoki.koki_v4l_create_YUYV_format(w, h)
 
-
     def v4l_print_format(self, fmt):
-
         self.libkoki.koki_v4l_print_format(fmt)
 
-
     def v4l_prepare_buffers(self, fd, count_p):
-
         return self.libkoki.koki_v4l_prepare_buffers(fd, count_p)
 
-
     def v4l_start_stream(self, fd):
-
         return self.libkoki.koki_v4l_start_stream(fd)
 
-
     def v4l_stop_stream(self, fd):
-
         return self.libkoki.koki_v4l_stop_stream(fd)
 
-
     def v4l_get_frame_array(self, fd, buffers):
-
         return self.libkoki.koki_v4l_get_frame_array(fd, buffers)
 
-
     def v4l_YUYV_frame_to_RGB_image(self, frame, w, h):
-
         return self.libkoki.koki_v4l_YUYV_frame_to_RGB_image(frame, w, h)
 
-
     def image_free(self, img):
-
         self.libkoki.koki_image_free(img)
 
-
     def find_markers(self, image, marker_width, params):
-
         markers = self.libkoki.koki_find_markers(image, marker_width, params)
 
         ret = []
@@ -369,9 +297,7 @@ class PyKoki:
 
         return ret
 
-
     def find_markers_fp(self, image, func, params):
-
         markers = self.libkoki.koki_find_markers_fp(image, WIDTH_FROM_CODE_FUNC(func), params)
 
         ret = []
@@ -387,7 +313,5 @@ class PyKoki:
 
         return ret
 
-
     def crc12(self, n):
-
         return self.libkoki.koki_crc12(n)
