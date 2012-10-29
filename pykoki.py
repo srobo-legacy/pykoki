@@ -13,13 +13,17 @@ class gpointer(c_void_p): pass
 
 
 class GArray(Structure):
+    "A glib GArray"
     _fields_ = [("data", gchar_p), ("len", guint)]
 
 
-class GSList(Structure): pass
+class GSList(Structure):
+    "A glib GSList"
+    pass
 GSList._fields_ = [("data", gpointer), ("next", POINTER(GSList))]
 
 class GPtrArray(Structure):
+    "A glib GPtrArray"
     _fields_ = [("pdata", POINTER(gpointer)), ("len", guint)]
 
 
