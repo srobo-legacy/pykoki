@@ -1,6 +1,6 @@
 from ctypes import *
 import os
-from v4l2 import v4l2
+import v4l2
 
 KOKI_MARKER_GRID_WIDTH = 10
 
