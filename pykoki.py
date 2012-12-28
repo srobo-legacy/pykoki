@@ -139,6 +139,15 @@ class Buffer(Structure):
     def __repr__(self):
         return "Buffer (length=%s, start = %s)" % (self.length, self.start)
 
+class LoggerCallbacks(Structure):
+    _fields_ = [ ("init", CFUNCTYPE(c_void_p) ),
+                 ("log", CFUNCTYPE(c_char_p, c_void_p, c_void_p) ) ]
+
+
+class Koki(Structure):
+    _fields_ = [ ("logger", LoggerCallbacks),
+                 ("logger_userdata", c_void_p) ]
+
 
 WIDTH_FROM_CODE_FUNC = CFUNCTYPE(c_float, c_int)
 
@@ -147,6 +156,12 @@ class PyKoki:
     def __init__(self, libdir = "../libkoki/lib"):
         self._load_library(libdir)
         self._setup_library()
+
+        # Create ourselves a context
+        self.ctx = self.libkoki.koki_new()
+
+    def __del__(self):
+        self.libkoki.koki_destroy( self.ctx )
 
     def _load_library(self, directory):
         libkoki = None
@@ -215,15 +230,22 @@ class PyKoki:
         l.koki_v4l_YUYV_frame_to_grayscale_image.argtypes = [POINTER(c_uint8), c_uint16, c_uint16]
         l.koki_v4l_YUYV_frame_to_grayscale_image.restype = c_void_p
 
+        # koki_t* koki_new( void );
+        l.koki_new.argtypes = []
+        l.koki_new.restype = POINTER(Koki)
+
+        # void koki_destroy( koki_t* koki );
+        l.koki_destroy.argtypes = [ POINTER(Koki) ]
+
         # GPtrArray* koki_find_markers(IplImage *frame, float marker_width,
         #                              koki_camera_params_t *params)
-        l.koki_find_markers.argtypes = [c_void_p, c_float, POINTER(CameraParams)]
+        l.koki_find_markers.argtypes = [ POINTER(Koki), c_void_p, c_float, POINTER(CameraParams) ]
         l.koki_find_markers.restype = POINTER(GPtrArray)
 
 
         # GPtrArray* koki_find_markers_fp(IplImage *frame, float (*fp)(int),
         #                                 koki_camera_params_t *params)
-        l.koki_find_markers_fp.argtypes = [c_void_p, WIDTH_FROM_CODE_FUNC, POINTER(CameraParams)]
+        l.koki_find_markers_fp.argtypes = [ POINTER(Koki), c_void_p, WIDTH_FROM_CODE_FUNC, POINTER(CameraParams) ]
         l.koki_find_markers_fp.restype = POINTER(GPtrArray)
 
         # void koki_markers_free(GPtrArray *markers)
@@ -287,7 +309,7 @@ class PyKoki:
         self.libkoki.koki_image_free(img)
 
     def find_markers(self, image, marker_width, params):
-        markers = self.libkoki.koki_find_markers(image, marker_width, params)
+        markers = self.libkoki.koki_find_markers(self.ctx, image, marker_width, params)
 
         ret = []
 
@@ -303,7 +325,7 @@ class PyKoki:
         return ret
 
     def find_markers_fp(self, image, func, params):
-        markers = self.libkoki.koki_find_markers_fp(image, WIDTH_FROM_CODE_FUNC(func), params)
+        markers = self.libkoki.koki_find_markers_fp(self.ctx, image, WIDTH_FROM_CODE_FUNC(func), params)
 
         ret = []
 
