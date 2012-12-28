@@ -157,6 +157,12 @@ class PyKoki:
         self._load_library(libdir)
         self._setup_library()
 
+        # Create ourselves a context
+        self.ctx = self.lib.koki_new()
+
+    def __del__(self):
+        self.lib.koki_destroy( self.ctx )
+
     def _load_library(self, directory):
         libkoki = None
 
@@ -295,8 +301,8 @@ class PyKoki:
     def image_free(self, img):
         self.libkoki.koki_image_free(img)
 
-    def find_markers(self, context, image, marker_width, params):
-        markers = self.libkoki.koki_find_markers(context, image, marker_width, params)
+    def find_markers(self, image, marker_width, params):
+        markers = self.libkoki.koki_find_markers(self.ctx, image, marker_width, params)
 
         ret = []
 
@@ -311,8 +317,8 @@ class PyKoki:
 
         return ret
 
-    def find_markers_fp(self, context, image, func, params):
-        markers = self.libkoki.koki_find_markers_fp(context, image, WIDTH_FROM_CODE_FUNC(func), params)
+    def find_markers_fp(self, image, func, params):
+        markers = self.libkoki.koki_find_markers_fp(self.ctx, image, WIDTH_FROM_CODE_FUNC(func), params)
 
         ret = []
 
