@@ -44,7 +44,7 @@ params = CameraParams(Point2Df(WIDTH/2, HEIGHT/2),
 while True:
 
     frame = koki.v4l_get_frame_array(fd, buffers)
-    img = koki.v4l_YUYV_frame_to_RGB_image(frame, WIDTH, HEIGHT)
+    img = koki.v4l_YUYV_frame_to_grayscale_image(frame, WIDTH, HEIGHT)
 
     markers = koki.find_markers_fp(img, width_from_code, params)
 
