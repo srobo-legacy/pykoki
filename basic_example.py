@@ -49,7 +49,7 @@ while True:
     markers = koki.find_markers_fp(img, width_from_code, params)
 
     for m in markers:
-        print "Code: %d, %s, distance: %f" % (m.code.value,
+        print "Code: %d, %s, distance: %f" % (m.code,
                                                        m.bearing,
                                                        m.distance)
 
