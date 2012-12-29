@@ -1,6 +1,8 @@
 from ctypes import *
 import os
 import v4l2
+from opencv_pytypes import IplImageType
+import cv2
 
 KOKI_MARKER_GRID_WIDTH = 10
 
@@ -150,6 +152,14 @@ class Koki(Structure):
 
 
 WIDTH_FROM_CODE_FUNC = CFUNCTYPE(c_float, c_int)
+
+def cv_ipl_p_extract(pyipl):
+    "Extract the IplImage pointer from a PyObject wrapping an IplImage"
+
+    p = cast( c_void_p( id(pyipl) ),
+              POINTER( IplImageType ) )
+
+    return p[0].a
 
 class V4LCamera(object):
     def __init__(self, filename, libkoki):
@@ -338,6 +348,9 @@ class PyKoki:
         self.libkoki.koki_image_free(img)
 
     def find_markers(self, image, marker_width, params):
+        if isinstance(image, cv2.cv.iplimage):
+            image = cv_ipl_p_extract(image)
+
         markers = self.libkoki.koki_find_markers(self.ctx, image, marker_width, params)
 
         ret = []
@@ -354,6 +367,9 @@ class PyKoki:
         return ret
 
     def find_markers_fp(self, image, func, params):
+        if isinstance(image, cv2.cv.iplimage):
+            image = cv_ipl_p_extract(image)
+
         markers = self.libkoki.koki_find_markers_fp(self.ctx, image, WIDTH_FROM_CODE_FUNC(func), params)
 
         ret = []
