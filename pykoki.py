@@ -151,6 +151,59 @@ class Koki(Structure):
 
 WIDTH_FROM_CODE_FUNC = CFUNCTYPE(c_float, c_int)
 
+class V4LCamera(object):
+    def __init__(self, filename, libkoki):
+        self.libkoki = libkoki
+
+        self.fd = self.libkoki.koki_v4l_open_cam(filename)
+
+        if self.fd < 0:
+            raise Exception("Couldn't open camera '%s'" % (cam_dev))
+
+        self.buffers = None
+        self.buffer_count = 0
+
+    def __del__(self):
+        self._free_buffers()
+        self.libkoki.koki_v4l_close_cam(self.fd)
+
+    @property
+    def format(self):
+        "The camera's image format"
+        return self.libkoki.koki_v4l_get_format(self.fd)
+
+    @format.setter
+    def format(self, fmt):
+        return self.libkoki.koki_v4l_set_format(self.fd, fmt)
+
+    def start_stream(self):
+        "Start streaming from the camera"
+        return self.libkoki.koki_v4l_start_stream(self.fd)
+
+    def stop_stream(self):
+        "Stop streaming from the camera"
+        return self.libkoki.koki_v4l_stop_stream(self.fd)
+
+    def prepare_buffers(self, count_p):
+        "Allocate all the buffers required for IO with the camera"
+        if self.buffers != None:
+            self._free_buffers()
+
+        c = c_int(count_p)
+
+        self.buffers = self.libkoki.koki_v4l_prepare_buffers(self.fd, byref(c))
+        self.buffer_count = c
+
+    def _free_buffers(self):
+        if self.buffers == None:
+            return
+
+        self.libkoki.koki_v4l_free_buffers( self.buffers, self.buffer_count )
+        self.buffers = None
+        self.buffer_count = 0
+
+    def get_frame(self):
+        return self.libkoki.koki_v4l_get_frame_array(self.fd, self.buffers)
 
 class PyKoki:
     def __init__(self, libdir = "../libkoki/lib"):
@@ -266,38 +319,14 @@ class PyKoki:
         pointer(ret)[0] = o
         return ret
 
-    def v4l_open_cam(self, filename):
-        return self.libkoki.koki_v4l_open_cam(filename)
-
-    def v4l_close_cam(self, fd):
-        return self.libkoki.koki_v4l_close_cam(fd)
-
-    def v4l_get_format(self, fd):
-        return self.libkoki.koki_v4l_get_format(fd)
-
-    def v4l_set_format(self, fd, fmt):
-        return self.libkoki.koki_v4l_set_format(fd, fmt)
+    def open_camera(self, filename):
+        return V4LCamera(filename, self.libkoki)
 
     def v4l_create_YUYV_format(self, w, h):
         return self.libkoki.koki_v4l_create_YUYV_format(w, h)
 
     def v4l_print_format(self, fmt):
         self.libkoki.koki_v4l_print_format(fmt)
-
-    def v4l_prepare_buffers(self, fd, count_p):
-        return self.libkoki.koki_v4l_prepare_buffers(fd, count_p)
-
-    def v4l_free_buffers(self, buffers, count):
-        self.libkoki.koki_v4l_free_buffers( buffers, count )
-
-    def v4l_start_stream(self, fd):
-        return self.libkoki.koki_v4l_start_stream(fd)
-
-    def v4l_stop_stream(self, fd):
-        return self.libkoki.koki_v4l_stop_stream(fd)
-
-    def v4l_get_frame_array(self, fd, buffers):
-        return self.libkoki.koki_v4l_get_frame_array(fd, buffers)
 
     def v4l_YUYV_frame_to_RGB_image(self, frame, w, h):
         return self.libkoki.koki_v4l_YUYV_frame_to_RGB_image(frame, w, h)

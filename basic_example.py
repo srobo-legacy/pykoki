@@ -7,23 +7,12 @@ HEIGHT = 600
 
 koki = PyKoki()
 
-cam_dev = "/dev/video0"
+cam = koki.open_camera( "/dev/video0" )
 
-fd = koki.v4l_open_cam(cam_dev)
+cam.format = koki.v4l_create_YUYV_format(WIDTH, HEIGHT)
 
-if fd < 0:
-    raise Exception("Couldn't open camera '%s'" % (cam_dev))
-
-fmt = koki.v4l_create_YUYV_format(WIDTH, HEIGHT)
-koki.v4l_set_format(fd, fmt)
-fmt = koki.v4l_get_format(fd)
-koki.v4l_print_format(fmt)
-
-count = c_int(1)
-buffers = koki.v4l_prepare_buffers(fd, count)
-
-koki.v4l_start_stream(fd)
-
+cam.prepare_buffers(1)
+cam.start_stream()
 
 def width_from_code(code):
 
@@ -41,20 +30,21 @@ params = CameraParams(Point2Df(WIDTH/2, HEIGHT/2),
                       Point2Di(WIDTH, HEIGHT))
 
 
-while True:
+try:
+    while True:
+        frame = cam.get_frame()
+        print "frame"
 
-    frame = koki.v4l_get_frame_array(fd, buffers)
-    img = koki.v4l_YUYV_frame_to_grayscale_image(frame, WIDTH, HEIGHT)
+        img = koki.v4l_YUYV_frame_to_grayscale_image(frame, WIDTH, HEIGHT)
 
-    markers = koki.find_markers_fp(img, width_from_code, params)
+        markers = koki.find_markers_fp(img, width_from_code, params)
 
-    for m in markers:
-        print "Code: %d, %s, distance: %f" % (m.code,
-                                                       m.bearing,
-                                                       m.distance)
+        for m in markers:
+            print "Code: %d, %s, distance: %f" % (m.code,
+                                                  m.bearing,
+                                                  m.distance)
 
-    koki.image_free(img)
+        koki.image_free(img)
 
-
-koki.v4l_stop_stream(fd)
-koki.v4l_close_cam(fd)
+except KeyboardInterrupt:
+    cam.stop_stream()
