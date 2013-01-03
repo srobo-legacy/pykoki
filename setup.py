@@ -4,7 +4,7 @@ from distutils.core import setup
 setup( name = "pykoki", 
        version = "0.0.1",
        requires = ["ctypes","v4l2",],
-       py_modules = ["pykoki"],
+       packages = ["pykoki"],
 
        author = "Chris Kirkham",
        author_email = "chrisjameskirkham@gmail.com",
