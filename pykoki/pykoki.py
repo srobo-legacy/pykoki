@@ -215,6 +215,15 @@ class V4LCamera(object):
     def get_frame(self):
         return self.libkoki.koki_v4l_get_frame_array(self.fd, self.buffers)
 
+    def get_control(self, id):
+        "Get a V4L2 control value from the camera"
+        return self.libkoki.koki_v4l_get_control(self.fd, id)
+
+    def set_control(self, id, value):
+        "Set a V4L2 control value on the camera"
+        return self.libkoki.koki_v4l_set_control(self.fd, id, value)
+
+
 class PyKoki:
     def __init__(self, libdir = "../libkoki/lib"):
         self._load_library(libdir)
@@ -292,6 +301,14 @@ class PyKoki:
         # IplImage *koki_v4l_YUYV_frame_to_grayscale_image(uint8_t *frame, uint16_t w, uint16_t h)
         l.koki_v4l_YUYV_frame_to_grayscale_image.argtypes = [POINTER(c_uint8), c_uint16, c_uint16]
         l.koki_v4l_YUYV_frame_to_grayscale_image.restype = c_void_p
+
+        # int koki_v4l_get_control(int fd, unsigned int id)
+        l.koki_v4l_get_control.argtypes = [c_int, c_uint]
+        l.koki_v4l_get_control.restype = c_int
+
+        # int koki_v4l_set_control(int fd, unsigned int id, unsigned int value)
+        l.koki_v4l_set_control.argtypes = [c_int, c_uint, c_uint]
+        l.koki_v4l_set_control.restype = c_int
 
         # koki_t* koki_new( void );
         l.koki_new.argtypes = []
