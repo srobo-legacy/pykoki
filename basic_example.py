@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from pykoki import *
+from pykoki import CameraParams, Point2Df, Point2Di, PyKoki
 
 WIDTH = 800
 HEIGHT = 600

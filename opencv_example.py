@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-from pykoki import PyKoki, Point2Di, Point2Df, CameraParams
-import cv, cv2
+
+import cv
 import sys
+
+from pykoki import PyKoki, Point2Di, Point2Df, CameraParams
 
 if len(sys.argv) != 2:
     print >>sys.stderr, "opencv_example.py IMG_FILE"
