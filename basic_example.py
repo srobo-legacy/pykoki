@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 from pykoki import CameraParams, Point2Df, Point2Di, PyKoki
 
 WIDTH = 800
@@ -33,16 +35,16 @@ params = CameraParams(Point2Df(WIDTH/2, HEIGHT/2),
 try:
     while True:
         frame = cam.get_frame()
-        print "frame"
+        print("frame")
 
         img = koki.v4l_YUYV_frame_to_grayscale_image(frame, WIDTH, HEIGHT)
 
         markers = koki.find_markers_fp(img, width_from_code, params)
 
         for m in markers:
-            print "Code: %d, %s, distance: %f" % (m.code,
+            print("Code: %d, %s, distance: %f" % (m.code,
                                                   m.bearing,
-                                                  m.distance)
+                                                  m.distance))
 
         koki.image_free(img)
 
