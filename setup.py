@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup( name = "pykoki", 
        version = "0.0.1",
-       requires = ["ctypes","v4l2",],
+       install_requires = ["v4l2",],
        packages = ["pykoki"],
 
        author = "Chris Kirkham",
