@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-from distutils.core import setup
+import ez_setup
+ez_setup.use_setuptools()
+from setuptools import setup, find_packages
 
 setup( name = "pykoki", 
        version = "0.0.1",
