@@ -4,12 +4,23 @@ from pykoki import *
 
 WIDTH = 800
 HEIGHT = 600
+DEFAULT_RES = (WIDTH, HEIGHT)
 
 koki = PyKoki()
 
 cam = koki.open_camera( "/dev/video0" )
 
 cam.format = koki.v4l_create_YUYV_format(WIDTH, HEIGHT)
+actual_res = cam.format.fmt.pix
+
+res = (actual_res.width, actual_res.height)
+
+if res != DEFAULT_RES:
+    # If we force the use of a resolution which isn't supported then
+    # libkoki will seg-fault during the greyscale conversion.
+    tpl = "Warning: default resolution {0} not supported. Using {1} instead."
+    print(tpl.format(DEFAULT_RES, res))
+    WIDTH, HEIGHT = res
 
 cam.prepare_buffers(1)
 cam.start_stream()
