@@ -7,7 +7,10 @@ if len(sys.argv) != 2:
     print >>sys.stderr, "opencv_example.py IMG_FILE"
     exit(1)
 
-img = cv.LoadImage( sys.argv[1], cv.CV_LOAD_IMAGE_GRAYSCALE )
+filename = sys.argv[1]
+
+img = cv.LoadImage( filename, cv.CV_LOAD_IMAGE_GRAYSCALE )
+assert img, "Failed to load image at {0}".format(filename)
 
 koki = PyKoki()
 
