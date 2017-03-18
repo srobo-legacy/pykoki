@@ -1,8 +1,10 @@
+
 from ctypes import *
 import os
 import v4l2
-from opencv_pytypes import IplImageType
 import cv2
+
+from .opencv_pytypes import IplImageType
 
 KOKI_MARKER_GRID_WIDTH = 10
 
